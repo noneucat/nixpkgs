@@ -30050,6 +30050,8 @@ in
     ;
   kops = kops_1_18;
 
+  leap-motion = callPackage ../misc/leap-motion { };
+
   lguf-brightness = callPackage ../misc/lguf-brightness { };
 
   lilypond = callPackage ../misc/lilypond { guile = guile_1_8; };
