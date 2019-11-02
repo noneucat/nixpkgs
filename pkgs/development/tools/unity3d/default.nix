@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchurl, makeWrapper, file, getopt
+{ stdenv, lib, fetchurl, makeWrapper, file, getopt, wrapGAppsHook
 , gtk2, gtk3, gdk-pixbuf, glib, libGL, libGLU, nss, nspr, udev, tbb
 , alsaLib, GConf, cups, libcap, fontconfig, freetype, pango
 , cairo, dbus, expat, zlib, libpng12, nodejs, gnutar, gcc, gcc_32bit
@@ -33,7 +33,9 @@ in stdenv.mkDerivation {
 
   nosuidLib = ./unity-nosuid.c;
 
-  nativeBuildInputs = [ makeWrapper file getopt ];
+  nativeBuildInputs = [ makeWrapper file getopt wrapGAppsHook ];
+
+  dontWrapGApps = true;
 
   outputs = [ "out" ];
 
@@ -56,6 +58,8 @@ in stdenv.mkDerivation {
 
     mkdir -p $out/bin
     makeWrapper $unitydir/Unity $out/bin/unity-editor \
+      "''${gappsWrapperArgs[@]}" \
+      --prefix XDG_DATA_DIRS : "${gtk3}/share/gsettings-schemas/${gtk3.name}/" \
       --prefix LD_PRELOAD : "$unitydir/libunity-nosuid.so" \
       --prefix PATH : "${binPath}"
   '';
